@@ -6,7 +6,7 @@ import { carrinho } from './_data/carrinho';
 function adicionarProduto(produto){
   const itemCarrinho = carrinho.value.items.find(item => item.id === produto.id);
   if (itemCarrinho){
-    itemCarrinho.quantidade++;
+    itemCarrinho.quantidade += 1;
     itemCarrinho.valorTotal = itemCarrinho.preco * itemCarrinho.quantidade;
   } else {
       const novoItem = {
@@ -16,15 +16,23 @@ function adicionarProduto(produto){
         quantidade: 1
       };
       carrinho.value.items.push(novoItem);
-  }
+  };
 };
 
-function incrementarItem(item){
-  item.value.quantidade++;
+function incrementarItem(index){
+  index.value.quantidade++;
 }
 
-function decrementarItem(item){
-  item.value.quantidade--;
+function decrementarItem(index){
+  index.value.quantidade--    
+  if(index.value.quantidade === 0){
+    const itemIndex = carrinho.value.items.indexOf(index.value);
+    carrinho.value.items.splice(itemIndex, 1);
+  }
+}
+
+function limparCarrinho(){
+  carrinho.value.items = [];
 }
 
 const totalCarrinho = computed(() => {
@@ -39,15 +47,18 @@ const totalCarrinho = computed(() => {
   <div class="min-h-screen">
     <div v-for="produto in produtos" :key="produto.id">
     {{ produto.nome }} - R$ {{ produto.preco}}
-    <button @click="adicionarProduto(produto)">Adicionar Produto</button>
-    </div>
+    <button @click="adicionarProduto(produto, quantidadeAdicionar)">Adicionar Produto</button> <br>
 
-    <div v-for="item in carrinho.items" :key="item.id">
-    {{ item.nome }}(s) {{ item.quantidade }} - R${{ item.preco * item.quantidade }}
-    <button @click="incrementarItem(ref(item))">Incrementar Item</button>
+    </div> 
+
+    <div v-for="(index, item) in carrinho.items" :key="item.id">
     <br>
-    <button @click="decrementarItem(ref(item))">Decrementar Item</button>
+    {{ index.nome }}(s) {{ index.quantidade }} - R${{ (index.preco * index.quantidade).toFixed(2) }} <br>
+    <button @click="incrementarItem(ref(index))">Incrementar Item</button>
+    <br>
+    <button @click="decrementarItem(ref(index))">Decrementar Item</button>
     </div>
-    R${{ totalCarrinho }}
+    Valor total do carrinho: R${{ totalCarrinho.toFixed(2) }} <br>
+    <button @click="limparCarrinho()">Limpar carrinho.</button>
   </div>
 </template>
