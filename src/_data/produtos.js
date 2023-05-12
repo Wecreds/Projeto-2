@@ -38,15 +38,5 @@ export const produtos = [
     id: 8,
     nome: 'Bermuda',
     preco: 79.9
-  },
-  {
-    id: 9,
-    nome: 'Cueca',
-    preco: 19.9
-  },
-  {
-    id: 10,
-    nome: 'Meia',
-    preco: 9.9
   }
 ]
